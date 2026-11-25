@@ -38,7 +38,7 @@ window.MM_QUIZ = [
     q: { en: "In a group project you are the one who...", pl: "W projekcie grupowym to ty..." },
     a: [
       { en: "keeps the discussion going", pl: "podtrzymujesz dyskusję", cup: "pi" },
-      { en: "makes steady progress every day", pl: "codziennie robisz stały postęp", cup: "e" },
+      { en: "makes steady progress every day", pl: "systematycznie robisz postępy", cup: "e" },
       { en: "checks every detail", pl: "sprawdzasz każdy szczegół", cup: "h" },
       { en: "brings the energy at 2 a.m. before the deadline", pl: "wnosisz energię o 2 w nocy przed terminem", cup: "k" }
     ]
@@ -55,14 +55,14 @@ window.MM_QUIZ = [
   {
     q: { en: "How do you drink your tea?", pl: "Jak pijesz herbatę?" },
     a: [
-      { en: "Refilled again and again", pl: "Dolewam bez końca", cup: "pi" },
+      { en: "Refilled again and again", pl: "Dolewaną bez końca", cup: "pi" },
       { en: "A little stronger every time", pl: "Za każdym razem trochę mocniejszą", cup: "e" },
       { en: "Exactly the same way, measured to the gram", pl: "Zawsze tak samo, odmierzoną co do grama", cup: "h" },
       { en: "Very hot or iced, never lukewarm", pl: "Bardzo gorącą albo z lodem, nigdy letnią", cup: "k" }
     ]
   },
   {
-    q: { en: "Your phone's photo gallery is mostly...", pl: "W twojej galerii zdjęć jest głównie..." },
+    q: { en: "Your phone's photo gallery is mostly...", pl: "W twojej galerii zdjęć są głównie..." },
     a: [
       { en: "screenshots of conversations", pl: "zrzuty ekranu z rozmów", cup: "pi" },
       { en: "before-and-after photos", pl: "zdjęcia „przed i po”", cup: "e" },
