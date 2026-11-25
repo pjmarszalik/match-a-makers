@@ -1,7 +1,7 @@
 /* ==========================================================
    Match(a) Makers - USTAWIENIA STRONY
-   To jest jedyny plik, który trzeba zmieniać przy datach,
-   godzinach, linkach, rankingu i wynikach głosowania.
+   Tu zmieniasz daty, godziny, linki, ranking i wyniki głosowania.
+   (Przy zmianie dat popraw też plik matcha-makers.ics, patrz niżej.)
    Godziny są w czasie polskim (zima = UTC+01:00).
    ========================================================== */
 
@@ -10,7 +10,8 @@ window.MM_CONFIG = {
   name: "Match(a) Makers",
 
   // Dwa dni wydarzenia. Pierwszy = duże odliczanie, drugi = małe pod spodem.
-  // UWAGA: jeśli zmienisz daty, zmień je też w pliku matcha-makers.ics
+  // UWAGA: jeśli zmienisz daty, zmień je też w pliku matcha-makers.ics.
+  // Tam godziny są w UTC: zimą odejmij 1 godzinę (11:30 w Polsce = T103000Z).
   days: [
     { start: "2026-12-15T11:30:00+01:00", end: "2026-12-15T13:30:00+01:00" },
     { start: "2026-12-16T11:30:00+01:00", end: "2026-12-16T13:30:00+01:00" }
