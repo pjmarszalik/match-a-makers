@@ -27,7 +27,10 @@
         <div class="countdown" id="cd-big"></div>
         <div class="countdown small" id="cd-small"></div>
       </div>
-      <p style="margin-top:18px"><a class="btn ghost" id="ics" download="matcha-makers.ics" data-i18n="home.calendar"></a></p>
+      <details class="cal-menu" id="cal-menu">
+        <summary class="btn ghost" data-i18n="home.calendar"></summary>
+        <div class="cal-options" id="cal-options"></div>
+      </details>
     </div>
     <div class="hero-art" id="hero-art"></div>
   </div>
@@ -38,10 +41,9 @@
     <h2 data-i18n="home.howTitle"></h2>
     <div class="grid grid-3 how-steps">
       <div class="card"><h3 data-i18n="home.step1t"></h3><p data-i18n="home.step1"></p></div>
-      <div class="card"><h3 data-i18n="home.step2t"></h3><p data-i18n="home.step2"></p></div>
+      <div class="card"><h3 data-i18n="home.step2t"></h3><p data-i18n="home.step2"></p><p class="card-link"><a href="kubki.html" data-i18n="home.seeCups"></a></p></div>
       <div class="card"><h3 data-i18n="home.step3t"></h3><p data-i18n="home.step3"></p></div>
     </div>
-    <p style="margin-top:18px"><span class="note" data-i18n="home.lang"></span></p>
   </div>
 </section>
 
@@ -54,7 +56,8 @@
 
 <section class="section">
   <div class="wrap">
-    <h2 data-i18n="home.photosTitle"></h2>
+    <h2 data-i18n="home.aboutTitle"></h2>
+    <p class="about-text" data-i18n="home.about"></p>
     <!-- ZDJĘCIA: wrzuć pliki do folderu img/ i zamień ten blok na np.
          <div class="grid grid-3"><img src="img/zespol1.jpg" alt="" style="width:100%;border-radius:18px"></div> -->
     <div class="photo-slot" data-i18n="home.photos"></div>
@@ -66,6 +69,7 @@
 <script src="js/i18n.js"></script>
 <script src="js/data/cups.js"></script>
 <script src="js/common.js"></script>
+<script src="js/leaderboard.js"></script>
 <script src="js/pages/home.js"></script>
 </body>
 </html>
