@@ -20,20 +20,16 @@ window.MM_FAQ = [
     a: { en: "We will announce the price soon. It will be a student price.", pl: "Cenę podamy wkrótce. Będzie studencka." }
   },
   {
-    q: { en: "Do I have to speak English?", pl: "Czy muszę mówić po angielsku?" },
-    a: { en: "The event is in English, so everyone can join. If you and the other person prefer Polish, go for it.", pl: "Wydarzenie jest po angielsku, żeby każdy mógł dołączyć. Jeśli ty i druga osoba wolicie polski, nie ma problemu." }
-  },
-  {
-    q: { en: "Can I come alone?", pl: "Mogę przyjść sam(a)?" },
+    q: { en: "Can I come alone?", pl: "Mogę przyjść w pojedynkę?" },
     a: { en: "Yes. That is exactly the idea.", pl: "Tak. Właśnie o to chodzi." }
   },
   {
     q: { en: "Do I have to study physics?", pl: "Czy muszę studiować fizykę?" },
-    a: { en: "No. Everyone is welcome.", pl: "Nie. Każdy jest mile widziany." }
+    a: { en: "No. Everyone is welcome.", pl: "Nie. Zapraszamy wszystkich." }
   },
   {
     q: { en: "What do the cup colours mean?", pl: "Co znaczą kolory kubków?" },
-    a: { en: "Each colour is a conversation topic, a bit like coloured wristbands at a club, only for conversations. For now the cups are placeholders named after constants. We will announce the topics soon.", pl: "Każdy kolor to temat rozmowy, trochę jak kolorowe opaski w klubie, tylko do rozmowy. Na razie kubki są robocze i noszą nazwy stałych. Tematy ogłosimy wkrótce." }
+    a: { en: "Each colour is a conversation topic, a bit like coloured wristbands at a club, only for conversations. For now the cups are placeholders named after constants. We will announce the topics soon.", pl: "Każdy kolor to temat rozmowy, trochę jak kolorowe opaski w klubie, tylko do rozmowy. Na razie kubki mają robocze nazwy od stałych. Tematy ogłosimy wkrótce." }
   },
   {
     q: { en: "Who is behind this?", pl: "Kto to organizuje?" },
