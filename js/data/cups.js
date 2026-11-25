@@ -23,7 +23,7 @@ window.MM_CUPS = [
     topic: null,
     about: {
       en: "The ratio of any circle's circumference to its diameter. Its digits never end and never settle into a repeating pattern.",
-      pl: "Stosunek obwodu dowolnego okręgu do jego średnicy. Jej cyfry nigdy się nie kończą i nigdy nie układają się w powtarzający się wzór."
+      pl: "Stosunek obwodu dowolnego okręgu do jego średnicy. Cyfry liczby pi nigdy się nie kończą i nigdy nie układają się w powtarzający się wzór."
     },
     fact: {
       en: "NASA's Jet Propulsion Laboratory uses only 15 decimal places of π, even for its most precise interplanetary navigation. With 37 decimal places you could calculate the circumference of the observable universe to within the width of a single hydrogen atom.",
@@ -75,7 +75,7 @@ window.MM_CUPS = [
       en: "Since 20 May 2019 the kilogram has been defined by fixing the value of h. Before that, a kilogram was simply the mass of one platinum-iridium cylinder, kept near Paris since 1889.",
       pl: "Od 20 maja 2019 roku kilogram jest zdefiniowany przez ustaloną wartość h. Wcześniej kilogram był po prostu masą jednego walca z platyny i irydu, przechowywanego pod Paryżem od 1889 roku."
     },
-    source: { label: "BIPM", url: "https://www.bipm.org/en/si-base-units/kilogram" },
+    source: { label: "Wikipedia: 2019 revision of the SI", url: "https://en.wikipedia.org/wiki/2019_revision_of_the_SI" },
     questions: [
       { en: "What is something small that made your week better?", pl: "Jaka drobna rzecz poprawiła ci ten tydzień?", sample: true },
       { en: "Which tiny detail do you always notice?", pl: "Jaki drobny szczegół zawsze zauważasz?", sample: true },
@@ -91,14 +91,14 @@ window.MM_CUPS = [
     placeholder: true,
     topic: null,
     about: {
-      en: "It connects temperature with the energy of single particles. Since 2019 it is what defines the kelvin.",
+      en: "It connects temperature with the energy of single particles. Since 2019 it has defined the kelvin.",
       pl: "Łączy temperaturę z energią pojedynczych cząstek. Od 2019 roku to ona definiuje kelwin."
     },
     fact: {
       en: "Boltzmann's entropy formula, S = k log W, is engraved on his grave in Vienna. Yet the k in it was introduced by Max Planck, not by Boltzmann.",
       pl: "Wzór Boltzmanna na entropię, S = k log W, jest wyryty na jego grobie w Wiedniu. A samo k wprowadził Max Planck, nie Boltzmann."
     },
-    source: { label: "Wikipedia: Boltzmann's entropy formula", url: "https://en.wikipedia.org/wiki/Boltzmann%27s_entropy_formula" },
+    source: { label: "Wikipedia: Boltzmann constant", url: "https://en.wikipedia.org/wiki/Boltzmann_constant" },
     questions: [
       { en: "Summer or winter, and why?", pl: "Lato czy zima i dlaczego?", sample: true },
       { en: "Is your room usually tidy, or is it a high-entropy place?", pl: "Twój pokój jest zwykle posprzątany, czy panuje w nim wysoka entropia?", sample: true },
