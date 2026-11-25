@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var and = MM.lang === "pl" ? " i " : " and ";
     var days = C.days.map(function (d) { return MM.fmtDay(d.start); }).join(and);
     var time = MM.fmtTime(C.days[0].start) + "–" + MM.fmtTime(C.days[0].end);
-    return s.replace("{days}", days).replace("{time}", time).replace("{place}", MM.pick(C.place));
+    var out = s.replace("{days}", days).replace("{time}", time).replace("{place}", MM.pick(C.place));
+    return out.charAt(0).toUpperCase() + out.slice(1); // "wtorek, 15 grudnia..." na początku zdania
   }
 
   function draw() {
