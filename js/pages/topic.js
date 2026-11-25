@@ -2,6 +2,18 @@
    Pytanie na start rozmowy (z przyciskiem "Inne pytanie"),
    czym jest stała i jedna ciekawostka. Dane w js/data/cups.js */
 document.addEventListener("DOMContentLoaded", function () {
+  /* biały tekst na kolorze kubka, chyba że kolor jest za jasny (kontrast poniżej 3:1), wtedy ciemny */
+  function onCup(hex) {
+    var m = /^#([0-9a-f]{6})$/i.exec(String(hex || ""));
+    if (!m) return "#fff";
+    var n = parseInt(m[1], 16);
+    var lum = [n >> 16, (n >> 8) & 255, n & 255].map(function (v) {
+      v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    var L = 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
+    return 1.05 / (L + 0.05) < 3 ? "#1f2a1b" : "#fff";
+  }
+
   var key = new URLSearchParams(location.search).get("k");
   var qIndex = -1;
 
@@ -47,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     root.innerHTML =
       '<p style="margin:18px 0 0"><a href="kubki.html">← ' + MM.t("topic.back") + "</a></p>" +
-      '<div class="topic-hero" style="--cup:' + c.color + '">' +
+      '<div class="topic-hero" style="--cup:' + c.color + ";--on-cup:" + onCup(c.color) + '">' +
       (c.placeholder ? '<div class="topic-badge">' + MM.placeholderBadge() + "</div>" : "") +
       '<div class="sym">' + MM.esc(c.symbol) + "</div>" +
       '<div class="value">' + MM.esc(MM.pick(c.name)) + " · " + MM.esc(c.value || "") + "</div>" +
@@ -57,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       '<div class="question-card" style="--cup:' + c.color + '">' +
       '<span class="eyebrow">' + MM.t("topic.question") + "</span>" +
-      '<div id="q-box">' + questionHTML(c) + "</div>" +
+      '<div id="q-box" aria-live="polite">' + questionHTML(c) + "</div>" +
       (many ? '<button type="button" class="btn green" id="q-next">' + MM.t("topic.another") + "</button>" : "") +
       "</div>" +
 
