@@ -33,10 +33,10 @@ window.MM_FAQ = [
   },
   {
     q: { en: "What do the cup colours mean?", pl: "Co znaczą kolory kubków?" },
-    a: { en: "Each colour is a conversation topic. We are still choosing the topics. Check the Cups page.", pl: "Każdy kolor to temat rozmowy. Tematy jeszcze wybieramy. Zajrzyj na stronę Kubki." }
+    a: { en: "Each colour is a conversation topic, a bit like coloured wristbands at a club, only for conversations. For now the cups are placeholders named after constants. We will announce the topics soon.", pl: "Każdy kolor to temat rozmowy, trochę jak kolorowe opaski w klubie, tylko do rozmowy. Na razie kubki są robocze i noszą nazwy stałych. Tematy ogłosimy wkrótce." }
   },
   {
     q: { en: "Who is behind this?", pl: "Kto to organizuje?" },
-    a: { en: "Six physics students from the University of Warsaw, as part of a course on entrepreneurship.", pl: "Sześcioro studentów fizyki z Uniwersytetu Warszawskiego, w ramach kursu z przedsiębiorczości." }
+    a: { en: "Six physics students from the University of Warsaw. Match(a) Makers is our team project for the course Intellectual Property and Entrepreneurship with Team Project.", pl: "Sześcioro studentów fizyki z Uniwersytetu Warszawskiego. Match(a) Makers to nasz projekt zespołowy w ramach przedmiotu Intellectual Property and Entrepreneurship with Team Project." }
   }
 ];
