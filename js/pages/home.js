@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("tiles").innerHTML = TILES.map(function (t) {
       var extra = "";
       if (t[1] === "game" && record) {
-        extra = '<p class="tile-record">' + ICONS.trophy + MM.esc(MM.tf("game.recordShort", { name: record.name, n: record.score })) + "</p>";
+        extra = '<p class="tile-record">' + ICONS.trophy + MM.esc(MM.tf("game.recordShort", { name: "\u2068" + record.name + "\u2069", n: record.score })) + "</p>";
       }
       return '<a class="tile" href="' + t[0] + '"><div class="tile-ico">' + ICONS[t[1]] + "</div><h3>" +
         MM.t(t[2]) + "</h3><p>" + MM.t(t[3]) + "</p>" + extra + "</a>";
