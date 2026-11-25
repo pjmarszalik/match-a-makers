@@ -1,5 +1,6 @@
 /* Sukienka: głosowanie, odliczanie do odsłonięcia i samo odsłonięcie.
-   Zdjęcie: wrzuć plik img/dress.jpg, wtedy pokaże się zamiast rysunku.
+   Przycisk "Zobacz oryginalne zdjęcie" prowadzi do Wikipedii (dressPhotoUrl w config.js).
+   Własne zdjęcie: wpisz jego ścieżkę w config.js (dressImage), pokaże się zamiast rysunku.
    Podgląd odsłonięcia przed czasem: sukienka.html?reveal=1 */
 document.addEventListener("DOMContentLoaded", function () {
   var C = window.MM_CONFIG;
@@ -37,15 +38,33 @@ document.addEventListener("DOMContentLoaded", function () {
       "</svg>";
   }
 
+  function creditText() {
+    return MM.t("dress.photoCredit") + (!vote && !revealed() ? " " + MM.t("dress.photoVote") : "");
+  }
+  function drawCredit() {
+    var p = document.getElementById("photo-credit");
+    if (p) p.textContent = creditText();
+  }
+
   function drawImage() {
     var box = document.getElementById("dress-img");
+    var link = C.dressPhotoUrl
+      ? '<a class="btn photo-btn" href="' + MM.esc(C.dressPhotoUrl) + '" target="_blank" rel="noopener">' + MM.t("dress.photoBtn") + ' ↗</a>' +
+        '<p class="photo-credit" id="photo-credit">' + MM.esc(creditText()) + "</p>"
+      : "";
+    function sketch() {
+      box.innerHTML = '<div class="dress-figure">' + dressArt() + '<div class="note">' + MM.t("dress.imgNote") + "</div></div>" + link;
+    }
+    if (!C.dressImage) { sketch(); return; }
     var img = new Image();
     img.alt = "The dress";
-    img.onload = function () { box.innerHTML = ""; box.appendChild(img); };
-    img.onerror = function () {
-      box.innerHTML = '<div style="text-align:center">' + dressArt() + '<div class="note" style="margin-top:10px">' + MM.t("dress.imgNote") + "</div></div>";
+    img.onload = function () {
+      box.innerHTML = "";
+      box.appendChild(img);
+      box.insertAdjacentHTML("beforeend", link);
     };
-    img.src = "img/dress.jpg";
+    img.onerror = sketch;
+    img.src = C.dressImage;
   }
 
   function revealed() { return forceReveal || MM.now() >= revealAt; }
@@ -71,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function draw() {
     var panel = document.getElementById("dress-panel");
     if (timer) { clearInterval(timer); timer = null; }
+    drawCredit();
 
     if (revealed()) {
       var mine = vote ? '<p>' + MM.t("dress.youPicked") + ": <strong>" + MM.t(OPT[vote].key) + "</strong>" + (vote === "bb" ? " ✓" : "") + "</p>" : "";
