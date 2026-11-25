@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if (!board.length) {
       bar.innerHTML = TROPHY + "<span>" + MM.t("game.noRecord") + "</span>";
     } else {
-      bar.innerHTML = TROPHY + "<span>" + MM.esc(MM.tf("game.recordShort", { name: board[0].name, n: board[0].score })) + "</span>";
+      bar.innerHTML = TROPHY + "<span>" + MM.esc(MM.tf("game.recordShort", { name: "\u2068" + board[0].name + "\u2069", n: board[0].score })) + "</span>";
     }
   }
 
@@ -139,7 +139,12 @@ document.addEventListener("DOMContentLoaded", function () {
   skipBtn.addEventListener("click", hidePanel);
 
   function offerSave(score, duration, r) {
-    if (r === round && !panelOpen && B.qualifies(score, board || [])) showPanel(score, duration);
+    if (r !== round || panelOpen || !B.qualifies(score, board || [])) return;
+    // ten nick ma już taki sam albo lepszy wynik: nie przerywaj gry okienkiem
+    var me = myNick().toLowerCase();
+    var mine = me ? (board || []).filter(function (en) { return String(en.name).toLowerCase() === me; })[0] : null;
+    if (mine && Number(mine.score) >= score) return;
+    showPanel(score, duration);
   }
 
   window.MM_GAME = MatchaFlap.start(canvas, {
