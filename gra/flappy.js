@@ -525,7 +525,7 @@
     window.addEventListener("keydown", function (e) {
       // nie przeszkadzaj w wpisywaniu nicku ani w klikaniu przycisków klawiaturą
       var t = e.target;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.tagName === "BUTTON" || t.tagName === "A" || t.isContentEditable)) return;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable || (t.tagName === "BUTTON" && t.form))) return;
       if (e.code === "Space" || e.code === "ArrowUp" || e.key === " ") {
         e.preventDefault();
         if (!e.repeat) flapAction();
