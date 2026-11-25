@@ -74,6 +74,9 @@
       document.querySelectorAll("[data-i18n]").forEach(function (el) {
         el.textContent = MM.t(el.getAttribute("data-i18n"));
       });
+      document.querySelectorAll("[data-i18n-ph]").forEach(function (el) {
+        el.setAttribute("placeholder", MM.t(el.getAttribute("data-i18n-ph")));
+      });
       document.querySelectorAll("[data-i18n-aria]").forEach(function (el) {
         el.setAttribute("aria-label", MM.t(el.getAttribute("data-i18n-aria")));
       });
@@ -123,26 +126,44 @@
       }).join("") + "</div>";
     },
 
-    /* plik .ics z oboma dniami do kalendarza */
-    icsUrl: function () {
+    /* krótki napis z datami, np. "Tue 15 & Wed 16 Dec" / "wt. 15 i śr. 16 grudnia" */
+    datesShort: function () {
+      var d1 = C.days[0].start, d2 = C.days[C.days.length - 1].start;
+      function wd(iso) { return MM.fmtDate(iso, { weekday: "short" }); }
+      function day(iso) { return MM.fmtDate(iso, { day: "numeric" }); }
+      var sameMonth = MM.fmtDate(d1, { month: "numeric" }) === MM.fmtDate(d2, { month: "numeric" });
+      if (MM.lang === "pl") {
+        var dm = function (iso) { return MM.fmtDate(iso, { day: "numeric", month: "long" }); };
+        return wd(d1) + " " + (sameMonth ? day(d1) : dm(d1)) + " i " + wd(d2) + " " + dm(d2);
+      }
+      var mon = function (iso) { return MM.fmtDate(iso, { month: "short" }); };
+      return wd(d1) + " " + day(d1) + (sameMonth ? "" : " " + mon(d1)) + " & " + wd(d2) + " " + day(d2) + " " + mon(d2);
+    },
+
+    /* link "dodaj do Kalendarza Google" dla jednego dnia (i = 0 albo 1) */
+    googleCalUrl: function (i) {
+      var d = C.days[i];
       function stamp(iso) {
         return new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
       }
-      var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//MatchaMakers//EN", "CALSCALE:GREGORIAN"];
-      C.days.forEach(function (d, i) {
-        lines.push(
-          "BEGIN:VEVENT",
-          "UID:matcha-makers-day" + (i + 1) + "@matchamakers",
-          "DTSTAMP:" + stamp(new Date().toISOString()),
-          "DTSTART:" + stamp(d.start),
-          "DTEND:" + stamp(d.end),
-          "SUMMARY:" + C.name + " (day " + (i + 1) + ")",
-          "LOCATION:" + (C.place.pl + ", " + C.address).replace(/,/g, "\\,"),
-          "END:VEVENT"
-        );
-      });
-      lines.push("END:VCALENDAR");
-      return "data:text/calendar;charset=utf-8," + encodeURIComponent(lines.join("\r\n"));
+      var title = C.name + (C.days.length > 1 ? (MM.lang === "pl" ? " (dzień " : " (day ") + (i + 1) + ")" : "");
+      return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+        "&text=" + encodeURIComponent(title) +
+        "&dates=" + stamp(d.start) + "/" + stamp(d.end) +
+        "&location=" + encodeURIComponent(MM.pick(C.place) + ", " + C.address) +
+        "&details=" + encodeURIComponent(MM.t("home.sub"));
+    },
+
+    /* {n}, {name} w tekstach */
+    tf: function (key, vars) {
+      var s = MM.t(key);
+      Object.keys(vars || {}).forEach(function (k) { s = s.split("{" + k + "}").join(String(vars[k])); });
+      return s;
+    },
+
+    /* etykieta "placeholder" / "robocze" */
+    placeholderBadge: function () {
+      return '<span class="badge">' + MM.t("placeholder") + "</span>";
     },
 
     /* ---------- kubek SVG ----------
