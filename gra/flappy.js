@@ -52,7 +52,10 @@
     var best = +(opts.loadBest ? opts.loadBest() : 0) || 0;
 
     var W = 360, H = T.H, scale = 1, dpr = 1;
-    var state, player, pipes, particles, leaves, score, colorIdx, colorFrom, colorT, deadTime, newBest, flash, groundX, hillX, time, readyBob;
+    var state, player, pipes, particles, leaves, score, colorIdx, colorFrom, colorT, deadTime, newBest, flash, groundX, hillX, time, readyBob, playStart;
+    var onStart = opts.onStart || function () {};
+    var onGameOver = opts.onGameOver || function () {};
+    var canRestart = opts.canRestart || function () { return true; };
 
     function resize() {
       var r = canvas.getBoundingClientRect();
@@ -102,9 +105,11 @@
     function flapAction() {
       if (state === "ready") {
         state = "play";
+        playStart = time;
         player.vy = T.flap;
         player.sloshV += 6;
         spawnPipe();
+        onStart();
         return;
       }
       if (state === "play") {
@@ -115,7 +120,7 @@
         }
         return;
       }
-      if (state === "dead" && time - deadTime > 0.6) {
+      if (state === "dead" && time - deadTime > 0.6 && canRestart()) {
         reset();
       }
     }
@@ -134,6 +139,8 @@
       flash = 1;
       player.vy = Math.min(player.vy, -220);
       if (score > best) { best = score; newBest = true; storeBest(best); }
+      var finalScore = score, duration = Math.max(0, time - playStart);
+      setTimeout(function () { onGameOver(finalScore, duration); }, 0);
     }
 
     function update(dt) {
@@ -470,7 +477,7 @@
           ctx.fillStyle = "#4f6b22";
           ctx.fillText(text("game.newBest"), W / 2, py + 142);
         }
-        if (time - deadTime > 0.6) {
+        if (time - deadTime > 0.6 && canRestart()) {
           ctx.font = "600 15px Inter, system-ui, sans-serif";
           ctx.fillStyle = "#1f2a1b";
           ctx.globalAlpha = 0.6 + 0.4 * Math.sin(time * 4);
@@ -510,9 +517,15 @@
     /* ---------- sterowanie ---------- */
     canvas.addEventListener("pointerdown", function (e) {
       e.preventDefault();
+      // klik w grę zabiera fokus z przycisku (np. EN/PL), żeby spacja dalej sterowała kubkiem
+      var a = document.activeElement;
+      if (a && a !== document.body && a.blur) a.blur();
       flapAction();
     });
     window.addEventListener("keydown", function (e) {
+      // nie przeszkadzaj w wpisywaniu nicku ani w klikaniu przycisków klawiaturą
+      var t = e.target;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.tagName === "BUTTON" || t.tagName === "A" || t.isContentEditable)) return;
       if (e.code === "Space" || e.code === "ArrowUp" || e.key === " ") {
         e.preventDefault();
         if (!e.repeat) flapAction();
@@ -532,7 +545,10 @@
     return {
       setColors: function (c) { if (c && c.length) palette = c; },
       flap: flapAction,
-      _debug: function () { return { state: state, score: score, y: player.y, pipes: pipes.length }; }
+      _debug: function () {
+        var next = pipes.filter(function (p) { return p.x + T.pipeW > player.x - 20; })[0];
+        return { state: state, score: score, y: player.y, vy: player.vy, pipes: pipes.length, gapY: next ? next.gapY : null };
+      }
     };
   }
 
