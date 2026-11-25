@@ -18,9 +18,26 @@
 <header id="site-header"></header>
 <main>
 <section class="game-wrap wrap">
-  <h1 style="margin-bottom:12px" data-i18n="game.title"></h1>
-  <div class="game-frame" id="game-frame"><canvas id="game"></canvas></div>
+  <h1 style="margin-bottom:8px" data-i18n="game.title"></h1>
+  <div class="record-bar hidden" id="record-bar"></div>
+  <div class="game-frame" id="game-frame">
+    <canvas id="game"></canvas>
+    <form class="save-panel hidden" id="save-panel" autocomplete="off">
+      <p class="save-title" id="save-title"></p>
+      <div class="save-row">
+        <label class="sr-only" for="nick" data-i18n="game.nick"></label>
+        <input id="nick" name="nick" type="text" maxlength="12" required data-i18n-ph="game.nick" enterkeyhint="done">
+        <button class="btn green" type="submit" id="save-btn" data-i18n="game.save"></button>
+      </div>
+      <p class="save-msg" id="save-msg" aria-live="polite"></p>
+      <button class="link-btn" type="button" id="skip-btn" data-i18n="game.skip"></button>
+    </form>
+  </div>
   <p class="game-help" data-i18n="game.help"></p>
+  <div class="board-wrap hidden" id="board-wrap">
+    <h2 data-i18n="game.board"></h2>
+    <ol class="board" id="board"></ol>
+  </div>
 </section>
 </main>
 <footer id="site-footer"></footer>
@@ -29,6 +46,7 @@
 <script src="js/data/cups.js"></script>
 <script src="gra/flappy.js"></script>
 <script src="js/common.js"></script>
+<script src="js/leaderboard.js"></script>
 <script src="js/pages/game-page.js"></script>
 </body>
 </html>
