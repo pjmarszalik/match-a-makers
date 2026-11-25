@@ -1,4 +1,4 @@
-/* Match(a) Makers - wspólny wygląd wszystkich podstron */
+/* Match(a) Makers - wspÃ³lny wyglÄ…d wszystkich podstron */
 
 :root {
   --cream: #f7f2e6;
@@ -54,7 +54,7 @@ p { margin: 0 0 1em; }
 .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
 .wrap-narrow { max-width: 760px; }
 
-html { scroll-padding-top: 80px; } /* fokus z klawiatury nie chowa się pod przyklejonym nagłówkiem */
+html { scroll-padding-top: 80px; } /* fokus z klawiatury nie chowa siÄ™ pod przyklejonym nagÅ‚Ã³wkiem */
 
 /* ---------- Header ---------- */
 .site-header {
@@ -132,7 +132,7 @@ html { scroll-padding-top: 80px; } /* fokus z klawiatury nie chowa się pod przy
 }
 .menu-btn svg { width: 22px; height: 22px; display: block; margin: auto; }
 
-/* bardzo wąskie telefony (320-360 px): logo, menu i EN/PL muszą się zmieścić w jednym rzędzie */
+/* bardzo wÄ…skie telefony (320-360 px): logo, menu i EN/PL muszÄ… siÄ™ zmieÅ›ciÄ‡ w jednym rzÄ™dzie */
 @media (max-width: 360px) {
   .header-row { gap: 8px; }
   .logo { font-size: 0.95rem; gap: 6px; }
@@ -288,8 +288,8 @@ a.chip:hover { border-color: var(--matcha); color: var(--ink); }
 .cal-menu { display: block; margin-top: 18px; }
 .cal-menu summary { list-style: none; }
 .cal-menu summary::-webkit-details-marker { display: none; }
-.cal-menu summary::after { content: "▾"; content: "▾" / ""; font-size: 0.8em; margin-left: 2px; }
-.cal-menu[open] summary::after { content: "▴"; content: "▴" / ""; }
+.cal-menu summary::after { content: "â–¾"; content: "â–¾" / ""; font-size: 0.8em; margin-left: 2px; }
+.cal-menu[open] summary::after { content: "â–´"; content: "â–´" / ""; }
 .cal-options {
   margin-top: 8px;
   width: 100%;
@@ -603,7 +603,7 @@ a.chip:hover { border-color: var(--matcha); color: var(--ink); }
 }
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after { content: "+"; font-size: 1.4rem; line-height: 1; color: var(--matcha-deep); }
-.faq details[open] summary::after { content: "–"; }
+.faq details[open] summary::after { content: "â€“"; }
 .faq details p { padding-bottom: 18px; margin: 0; color: var(--ink-soft); }
 
 /* ---------- Game page ---------- */
@@ -614,7 +614,7 @@ a.chip:hover { border-color: var(--matcha); color: var(--ink); }
   max-width: 440px;
   aspect-ratio: 9 / 15;
   max-height: calc(100vh - 210px);
-  max-height: calc(100svh - 210px); /* miejsce na pasek z rekordem, także przy paskach przeglądarki w telefonie */
+  max-height: calc(100svh - 210px); /* miejsce na pasek z rekordem, takÅ¼e przy paskach przeglÄ…darki w telefonie */
   border-radius: 22px;
   overflow: hidden;
   box-shadow: var(--shadow);
@@ -734,7 +734,7 @@ a.chip:hover { border-color: var(--matcha); color: var(--ink); }
   flex: 1;
   min-width: 0;
   font: inherit;
-  font-size: 16px; /* 16px = iPhone nie przybliża strony przy wpisywaniu */
+  font-size: 16px; /* 16px = iPhone nie przybliÅ¼a strony przy wpisywaniu */
   padding: 10px 14px;
   border: 1.5px solid var(--line);
   border-radius: 12px;
