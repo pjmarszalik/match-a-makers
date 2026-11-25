@@ -1,0 +1,25 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Match(a) Makers//Event//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Match(a) Makers
+BEGIN:VEVENT
+UID:match-a-makers-day1-2026@match-a-makers
+DTSTAMP:20261125T120000Z
+DTSTART:20261215T103000Z
+DTEND:20261215T123000Z
+SUMMARY:Match(a) Makers (day 1)
+LOCATION:Pokój Studencki\, Wydział Fizyki UW\, ul. Pasteura 5\, Warszawa
+DESCRIPTION:Matcha and conversations with new people.
+END:VEVENT
+BEGIN:VEVENT
+UID:match-a-makers-day2-2026@match-a-makers
+DTSTAMP:20261125T120000Z
+DTSTART:20261216T103000Z
+DTEND:20261216T123000Z
+SUMMARY:Match(a) Makers (day 2)
+LOCATION:Pokój Studencki\, Wydział Fizyki UW\, ul. Pasteura 5\, Warszawa
+DESCRIPTION:Matcha and conversations with new people.
+END:VEVENT
+END:VCALENDAR
