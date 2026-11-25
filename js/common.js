@@ -248,6 +248,9 @@
       var open = nav.classList.toggle("open");
       btn.setAttribute("aria-expanded", open ? "true" : "false");
     });
+    function closeNav() { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }
+    document.addEventListener("click", function (e) { if (nav.classList.contains("open") && !el.contains(e.target)) closeNav(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && nav.classList.contains("open")) { closeNav(); btn.focus(); } });
   }
 
   function renderFooter() {
