@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · Match(a) Makers</title>
+<meta name="description" content="Matcha and conversations with new people. Students' Room, Faculty of Physics, University of Warsaw.">
+<meta property="og:title" content="Match(a) Makers">
+<meta property="og:description" content="Matcha and conversations with new people. Students' Room, Faculty of Physics, University of Warsaw.">
+<meta name="theme-color" content="#f7f2e6">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="home" data-title="nav.home">
+<header id="site-header"></header>
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Match<span class="paren">(a)</span> Makers</h1>
+      <p class="sub" data-i18n="home.sub"></p>
+      <div class="hero-meta" id="hero-meta"></div>
+      <div class="countdowns">
+        <div class="countdown" id="cd-big"></div>
+        <div class="countdown small" id="cd-small"></div>
+      </div>
+      <p style="margin-top:18px"><a class="btn ghost" id="ics" download="matcha-makers.ics" data-i18n="home.calendar"></a></p>
+    </div>
+    <div class="hero-art" id="hero-art"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2 data-i18n="home.howTitle"></h2>
+    <div class="grid grid-3 how-steps">
+      <div class="card"><h3 data-i18n="home.step1t"></h3><p data-i18n="home.step1"></p></div>
+      <div class="card"><h3 data-i18n="home.step2t"></h3><p data-i18n="home.step2"></p></div>
+      <div class="card"><h3 data-i18n="home.step3t"></h3><p data-i18n="home.step3"></p></div>
+    </div>
+    <p style="margin-top:18px"><span class="note" data-i18n="home.lang"></span></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2 data-i18n="home.exploreTitle"></h2>
+    <div class="tiles" id="tiles"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2 data-i18n="home.photosTitle"></h2>
+    <!-- ZDJĘCIA: wrzuć pliki do folderu img/ i zamień ten blok na np.
+         <div class="grid grid-3"><img src="img/zespol1.jpg" alt="" style="width:100%;border-radius:18px"></div> -->
+    <div class="photo-slot" data-i18n="home.photos"></div>
+  </div>
+</section>
+</main>
+<footer id="site-footer"></footer>
+<script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data/cups.js"></script>
+<script src="js/common.js"></script>
+<script src="js/pages/home.js"></script>
+</body>
+</html>

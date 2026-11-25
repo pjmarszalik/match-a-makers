@@ -1,0 +1,540 @@
+/* ==========================================================
+   MATCHA FLAP - silnik gry
+   Kubek z matchą leci między bambusami. Każdy punkt zmienia
+   kolor kubka. Fizyka liczona w stałym kroku 1/120 s, więc gra
+   działa tak samo na każdym ekranie (60 Hz, 120 Hz itd.).
+
+   Ustawienia trudności są w obiekcie TUNING poniżej.
+   ========================================================== */
+
+(function () {
+  var TUNING = {
+    H: 600,              // wysokość świata gry (szerokość liczy się z ekranu)
+    gravity: 1550,       // px/s²
+    flap: -440,          // prędkość po stuknięciu (minus = w górę)
+    maxFall: 720,
+    speed: 150,          // prędkość bambusów na starcie
+    speedPerPoint: 3,
+    speedMax: 235,
+    gap: 178,            // przerwa między bambusami na starcie
+    gapPerPoint: 1.6,
+    gapMin: 138,
+    spacing: 225,        // odstęp między kolejnymi parami bambusów
+    pipeW: 62,
+    ground: 70
+  };
+
+  var STEP = 1 / 120;
+
+  function hexToRgb(h) {
+    h = h.replace("#", "");
+    if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
+    var n = parseInt(h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function mix(a, b, t) {
+    var A = hexToRgb(a), B = hexToRgb(b);
+    return "rgb(" + Math.round(A[0] + (B[0] - A[0]) * t) + "," + Math.round(A[1] + (B[1] - A[1]) * t) + "," + Math.round(A[2] + (B[2] - A[2]) * t) + ")";
+  }
+  function rgba(hex, a) {
+    var c = hexToRgb(hex);
+    return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + a + ")";
+  }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  function start(canvas, opts) {
+    var ctx = canvas.getContext("2d");
+    var T = TUNING;
+    var text = opts.text || function (k) { return k; };
+    var palette = (opts.colors && opts.colors.length) ? opts.colors : ["#e2654a", "#e8a13a", "#3f8fd6", "#8b62c2", "#de5f97", "#38557f"];
+    var storeBest = opts.saveBest || function () {};
+    var best = +(opts.loadBest ? opts.loadBest() : 0) || 0;
+
+    var W = 360, H = T.H, scale = 1, dpr = 1;
+    var state, player, pipes, particles, leaves, score, colorIdx, colorFrom, colorT, deadTime, newBest, flash, groundX, hillX, time, readyBob;
+
+    function resize() {
+      var r = canvas.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      canvas.width = Math.round(r.width * dpr);
+      canvas.height = Math.round(r.height * dpr);
+      scale = canvas.height / H;
+      W = canvas.width / scale;
+      if (player && state === "ready") player.x = W * 0.3;
+    }
+
+    function reset() {
+      state = "ready";
+      player = { x: W * 0.3, y: H * 0.42, vy: 0, angle: 0, slosh: 0, sloshV: 0 };
+      pipes = [];
+      particles = [];
+      score = 0;
+      colorIdx = 0;
+      colorFrom = palette[0];
+      colorT = 1;
+      deadTime = 0;
+      newBest = false;
+      flash = 0;
+      readyBob = 0;
+    }
+
+    function initLeaves() {
+      leaves = [];
+      for (var i = 0; i < 7; i++) {
+        leaves.push({ x: rand(0, 600), y: rand(30, H - 180), s: rand(0.6, 1.2), rot: rand(0, 6.28), vr: rand(-0.6, 0.6), v: rand(12, 26) });
+      }
+    }
+
+    function currentGap() { return Math.max(T.gapMin, T.gap - score * T.gapPerPoint); }
+    function currentSpeed() { return Math.min(T.speedMax, T.speed + score * T.speedPerPoint); }
+
+    function spawnPipe() {
+      var last = pipes[pipes.length - 1];
+      var g = currentGap();
+      var minY = 70 + g / 2, maxY = H - T.ground - 50 - g / 2;
+      var y = rand(minY, maxY);
+      if (last) y = clamp(y, last.gapY - 170, last.gapY + 170);
+      pipes.push({ x: last ? last.x + T.spacing : W + 40, gapY: y, gap: g, passed: false, seed: Math.random() });
+    }
+
+    function flapAction() {
+      if (state === "ready") {
+        state = "play";
+        player.vy = T.flap;
+        player.sloshV += 6;
+        spawnPipe();
+        return;
+      }
+      if (state === "play") {
+        player.vy = T.flap;
+        player.sloshV += 6;
+        for (var i = 0; i < 3; i++) {
+          particles.push({ x: player.x - 6, y: player.y + 20, vx: rand(-60, 20), vy: rand(40, 120), life: 0.45, max: 0.45, r: rand(1.5, 3), c: "#cfe3a0" });
+        }
+        return;
+      }
+      if (state === "dead" && time - deadTime > 0.6) {
+        reset();
+      }
+    }
+
+    function burst(color) {
+      for (var i = 0; i < 18; i++) {
+        var a = rand(0, Math.PI * 2), s = rand(80, 260);
+        particles.push({ x: player.x, y: player.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 60, life: rand(0.5, 0.9), max: 0.9, r: rand(2, 4.5), c: i % 3 === 0 ? "#7a9a3a" : color });
+      }
+    }
+
+    function die() {
+      if (state !== "play") return;
+      state = "dead";
+      deadTime = time;
+      flash = 1;
+      player.vy = Math.min(player.vy, -220);
+      if (score > best) { best = score; newBest = true; storeBest(best); }
+    }
+
+    function update(dt) {
+      time += dt;
+      readyBob += dt;
+      if (colorT < 1) colorT = Math.min(1, colorT + dt * 4);
+      if (flash > 0) flash = Math.max(0, flash - dt * 3);
+
+      var moving = state !== "dead";
+      var spd = state === "play" ? currentSpeed() : 90;
+      if (moving) {
+        groundX = (groundX + spd * dt) % 48;
+        hillX += spd * dt;
+      }
+
+      leaves.forEach(function (l) {
+        l.x -= (l.v + (moving ? spd * 0.15 : 0)) * dt;
+        l.rot += l.vr * dt;
+        l.y += Math.sin(time + l.s * 10) * 8 * dt;
+        if (l.x < -30) { l.x = W + rand(10, 200); l.y = rand(30, H - 180); }
+      });
+
+      // sprężyna "chlupania" płynu w kubku
+      var prevAngle = player.angle;
+
+      if (state === "ready") {
+        player.y = H * 0.42 + Math.sin(readyBob * 3) * 8;
+        player.angle = Math.sin(readyBob * 3) * 0.06;
+      } else {
+        player.vy = Math.min(T.maxFall, player.vy + T.gravity * dt);
+        player.y += player.vy * dt;
+        var target = clamp(player.vy / 900, -0.35, state === "dead" ? 1.4 : 0.8);
+        player.angle += (target - player.angle) * Math.min(1, dt * 10);
+        if (player.y < 30) { player.y = 30; player.vy = Math.max(0, player.vy); }
+        var groundY = H - T.ground;
+        if (player.y + 31 > groundY) {
+          player.y = groundY - 31;
+          if (state === "play") die();
+          player.vy = 0;
+        }
+      }
+
+      var dAngle = (player.angle - prevAngle) / dt;
+      player.sloshV += (-player.slosh * 90 - player.sloshV * 6 - dAngle * 4) * dt;
+      player.slosh += player.sloshV * dt;
+      player.slosh = clamp(player.slosh, -0.6, 0.6);
+
+      if (state === "play") {
+        var speed = currentSpeed();
+        pipes.forEach(function (p) { p.x -= speed * dt; });
+        while (pipes.length && pipes[0].x < -T.pipeW - 20) pipes.shift();
+        if (!pipes.length || pipes[pipes.length - 1].x < W - T.spacing + 10) spawnPipe();
+
+        var hx = 19, hy = 27;
+        for (var i = 0; i < pipes.length; i++) {
+          var p = pipes[i];
+          if (!p.passed && p.x + T.pipeW < player.x - hx) {
+            p.passed = true;
+            score++;
+            colorFrom = palette[colorIdx % palette.length];
+            colorIdx++;
+            colorT = 0;
+            burst(palette[colorIdx % palette.length]);
+          }
+          if (player.x + hx > p.x + 4 && player.x - hx < p.x + T.pipeW - 4) {
+            if (player.y - hy < p.gapY - p.gap / 2 || player.y + hy > p.gapY + p.gap / 2) die();
+          }
+        }
+      }
+
+      for (var j = particles.length - 1; j >= 0; j--) {
+        var q = particles[j];
+        q.life -= dt;
+        if (q.life <= 0) { particles.splice(j, 1); continue; }
+        q.vy += 600 * dt;
+        q.x += q.vx * dt;
+        q.y += q.vy * dt;
+      }
+    }
+
+    /* ---------- rysowanie ---------- */
+    function cupColor() {
+      var to = palette[colorIdx % palette.length];
+      return colorT >= 1 ? to : mix(colorFrom, to, colorT);
+    }
+
+    function drawBackground() {
+      var g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, "#f7f2e6");
+      g.addColorStop(1, "#e3ecc8");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+
+      // słońce
+      ctx.fillStyle = "rgba(255, 225, 160, 0.55)";
+      ctx.beginPath();
+      ctx.arc(W * 0.78, 110, 46, 0, Math.PI * 2);
+      ctx.fill();
+
+      // dwa pasma wzgórz (paralaksa)
+      hills(0.15, H - T.ground - 120, 40, "#d3e0ab", 0.011);
+      hills(0.35, H - T.ground - 60, 34, "#bccf8a", 0.017);
+
+      // liście herbaty w tle
+      leaves.forEach(function (l) {
+        ctx.save();
+        ctx.translate(l.x, l.y);
+        ctx.rotate(l.rot);
+        ctx.scale(l.s, l.s);
+        ctx.fillStyle = "rgba(122, 154, 58, 0.28)";
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 11, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(79, 107, 34, 0.25)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-10, 0);
+        ctx.lineTo(10, 0);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    function hills(par, base, amp, color, freq) {
+      var off = hillX * par;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(0, H);
+      for (var x = 0; x <= W + 10; x += 10) {
+        var X = x + off;
+        var y = base - Math.sin(X * freq) * amp - Math.sin(X * freq * 2.3 + 1.7) * amp * 0.35;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, H);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawBamboo(x, y0, y1, seed, capAt) {
+      var w = T.pipeW;
+      var g = ctx.createLinearGradient(x, 0, x + w, 0);
+      g.addColorStop(0, "#7f9f3a");
+      g.addColorStop(0.35, "#b5cc6a");
+      g.addColorStop(0.7, "#93b04a");
+      g.addColorStop(1, "#6b8a2e");
+      ctx.fillStyle = g;
+      ctx.fillRect(x, y0, w, y1 - y0);
+
+      // węzły bambusa
+      ctx.fillStyle = "rgba(70, 95, 25, 0.55)";
+      var step = 64;
+      var startN = Math.floor(seed * step);
+      for (var y = y0 + startN; y < y1; y += step) {
+        ctx.fillRect(x - 2, y, w + 4, 5);
+        ctx.fillStyle = "rgba(230, 240, 190, 0.5)";
+        ctx.fillRect(x, y + 5, w, 2);
+        ctx.fillStyle = "rgba(70, 95, 25, 0.55)";
+      }
+      // pionowy połysk
+      ctx.fillStyle = "rgba(255, 255, 230, 0.22)";
+      ctx.fillRect(x + w * 0.22, y0, 6, y1 - y0);
+
+      // zakończenie przy przerwie
+      ctx.fillStyle = "#6b8a2e";
+      var capH = 14;
+      var cy = capAt === "bottom" ? y1 - capH : y0;
+      ctx.fillRect(x - 5, cy, w + 10, capH);
+      ctx.fillStyle = "rgba(230, 240, 190, 0.55)";
+      ctx.fillRect(x - 5, capAt === "bottom" ? y1 - capH : y0 + capH - 3, w + 10, 3);
+    }
+
+    function drawPipes() {
+      var groundY = H - T.ground;
+      pipes.forEach(function (p) {
+        drawBamboo(p.x, -10, p.gapY - p.gap / 2, p.seed, "bottom");
+        drawBamboo(p.x, p.gapY + p.gap / 2, groundY, p.seed * 0.7, "top");
+      });
+    }
+
+    function drawGround() {
+      var y = H - T.ground;
+      ctx.fillStyle = "#c99d6c";
+      ctx.fillRect(0, y, W, T.ground);
+      ctx.fillStyle = "#a97c4f";
+      ctx.fillRect(0, y, W, 5);
+      ctx.strokeStyle = "rgba(120, 80, 40, 0.25)";
+      ctx.lineWidth = 2;
+      for (var x = -groundX; x < W + 48; x += 48) {
+        ctx.beginPath();
+        ctx.moveTo(x, y + 5);
+        ctx.lineTo(x + 18, H);
+        ctx.stroke();
+      }
+    }
+
+    function cupPath() {
+      ctx.beginPath();
+      ctx.moveTo(-20, -25);
+      ctx.lineTo(20, -25);
+      ctx.lineTo(15, 22);
+      ctx.quadraticCurveTo(14.5, 25, 11, 25);
+      ctx.lineTo(-11, 25);
+      ctx.quadraticCurveTo(-14.5, 25, -15, 22);
+      ctx.closePath();
+    }
+
+    function drawCup() {
+      var col = cupColor();
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      ctx.rotate(player.angle);
+      ctx.scale(1.35, 1.35);
+
+      // słomka
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 4;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(8, -38);
+      ctx.lineTo(3, -6);
+      ctx.stroke();
+
+      ctx.save();
+      cupPath();
+      ctx.clip();
+      // szkło
+      ctx.fillStyle = "rgba(255,255,255,0.6)";
+      ctx.fillRect(-30, -30, 60, 60);
+      // matcha (powierzchnia zostaje pozioma, jak prawdziwy płyn)
+      ctx.save();
+      ctx.rotate(-player.angle + player.slosh);
+      ctx.fillStyle = "#7a9a3a";
+      ctx.fillRect(-45, -9, 90, 70);
+      ctx.fillStyle = "#cfe0a0";
+      ctx.fillRect(-45, -11, 90, 5);
+      ctx.restore();
+      // przezroczysty kolor kubka
+      ctx.fillStyle = col;
+      ctx.globalAlpha = 0.25;
+      ctx.fillRect(-30, -30, 60, 60);
+      ctx.globalAlpha = 1;
+      // opaska w kolorze kubka
+      ctx.fillStyle = col;
+      ctx.fillRect(-30, 4, 60, 11);
+      // odblask
+      ctx.fillStyle = "rgba(255,255,255,0.45)";
+      ctx.fillRect(-13, -22, 4, 40);
+      ctx.restore();
+
+      // obrys i rant
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = "round";
+      cupPath();
+      ctx.stroke();
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(-22, -28, 44, 4, 2); else ctx.rect(-22, -28, 44, 4);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawParticles() {
+      particles.forEach(function (q) {
+        ctx.globalAlpha = clamp(q.life / q.max, 0, 1);
+        ctx.fillStyle = q.c;
+        ctx.beginPath();
+        ctx.arc(q.x, q.y, q.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function outlinedText(str, x, y, size, fill) {
+      ctx.font = "700 " + size + "px Fraunces, Georgia, serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.lineWidth = Math.max(3, size / 9);
+      ctx.strokeStyle = "rgba(31, 42, 27, 0.85)";
+      ctx.lineJoin = "round";
+      ctx.strokeText(str, x, y);
+      ctx.fillStyle = fill || "#ffffff";
+      ctx.fillText(str, x, y);
+    }
+
+    function panel(x, y, w, h) {
+      ctx.fillStyle = "rgba(255, 253, 247, 0.94)";
+      ctx.strokeStyle = "rgba(31, 42, 27, 0.15)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, y, w, h, 18); else ctx.rect(x, y, w, h);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    function drawHUD() {
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      if (state === "play") {
+        outlinedText(String(score), W / 2, 62, 52);
+      }
+      if (state === "ready") {
+        outlinedText(text("game.title"), W / 2, 110, 40, "#e6edc9");
+        var pulse = 0.6 + 0.4 * Math.sin(time * 4);
+        ctx.globalAlpha = pulse;
+        ctx.font = "600 18px Inter, system-ui, sans-serif";
+        ctx.fillStyle = "#1f2a1b";
+        ctx.fillText(text("game.start"), W / 2, H * 0.42 + 70);
+        ctx.globalAlpha = 1;
+        if (best > 0) {
+          ctx.font = "500 15px Inter, system-ui, sans-serif";
+          ctx.fillStyle = "#4b5745";
+          ctx.fillText(text("game.best") + ": " + best, W / 2, H * 0.42 + 98);
+        }
+      }
+      if (state === "dead") {
+        var pw = Math.min(280, W - 40), ph = 190;
+        var px = (W - pw) / 2, py = H * 0.25;
+        panel(px, py, pw, ph);
+        ctx.fillStyle = "#1f2a1b";
+        ctx.font = "700 28px Fraunces, Georgia, serif";
+        ctx.fillText(text("game.over"), W / 2, py + 38);
+        ctx.font = "500 15px Inter, system-ui, sans-serif";
+        ctx.fillStyle = "#4b5745";
+        ctx.fillText(text("game.score"), W / 2 - pw / 4, py + 78);
+        ctx.fillText(text("game.best"), W / 2 + pw / 4, py + 78);
+        ctx.font = "700 34px Fraunces, Georgia, serif";
+        ctx.fillStyle = "#1f2a1b";
+        ctx.fillText(String(score), W / 2 - pw / 4, py + 110);
+        ctx.fillText(String(best), W / 2 + pw / 4, py + 110);
+        if (newBest) {
+          ctx.font = "700 14px Inter, system-ui, sans-serif";
+          ctx.fillStyle = "#4f6b22";
+          ctx.fillText(text("game.newBest"), W / 2, py + 142);
+        }
+        if (time - deadTime > 0.6) {
+          ctx.font = "600 15px Inter, system-ui, sans-serif";
+          ctx.fillStyle = "#1f2a1b";
+          ctx.globalAlpha = 0.6 + 0.4 * Math.sin(time * 4);
+          ctx.fillText(text("game.again"), W / 2, py + 170);
+          ctx.globalAlpha = 1;
+        }
+      }
+      if (flash > 0) {
+        ctx.fillStyle = "rgba(255,255,255," + (flash * 0.7) + ")";
+        ctx.fillRect(0, 0, W, H);
+      }
+    }
+
+    function render() {
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      drawBackground();
+      drawPipes();
+      drawGround();
+      drawParticles();
+      drawCup();
+      drawHUD();
+    }
+
+    /* ---------- pętla ---------- */
+    var acc = 0, last = 0, running = true;
+    function frame(ts) {
+      if (!running) return;
+      if (!last) last = ts;
+      var dt = Math.min(0.1, (ts - last) / 1000);
+      last = ts;
+      acc += dt;
+      while (acc >= STEP) { update(STEP); acc -= STEP; }
+      render();
+      requestAnimationFrame(frame);
+    }
+
+    /* ---------- sterowanie ---------- */
+    canvas.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      flapAction();
+    });
+    window.addEventListener("keydown", function (e) {
+      if (e.code === "Space" || e.code === "ArrowUp" || e.key === " ") {
+        e.preventDefault();
+        if (!e.repeat) flapAction();
+      }
+    });
+    document.addEventListener("visibilitychange", function () { last = 0; acc = 0; });
+
+    if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
+    window.addEventListener("resize", resize);
+
+    time = 0; groundX = 0; hillX = 0;
+    resize();
+    reset();
+    initLeaves();
+    requestAnimationFrame(frame);
+
+    return {
+      setColors: function (c) { if (c && c.length) palette = c; },
+      flap: flapAction,
+      _debug: function () { return { state: state, score: score, y: player.y, pipes: pipes.length }; }
+    };
+  }
+
+  window.MatchaFlap = { start: start, TUNING: TUNING };
+})();
