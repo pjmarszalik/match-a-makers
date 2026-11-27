@@ -459,7 +459,7 @@
       }
       if (state === "dead") {
         var pw = Math.min(280, W - 40), ph = 190;
-        var px = (W - pw) / 2, py = H * 0.25;
+        var px = (W - pw) / 2, py = H * 0.18;
         panel(px, py, pw, ph);
         ctx.fillStyle = "#1f2a1b";
         ctx.font = "700 28px Fraunces, Georgia, serif";

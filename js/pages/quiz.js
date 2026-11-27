@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
       root.innerHTML =
         '<span class="eyebrow">' + MM.t("quiz.result") + "</span>" +
         '<div class="result-cup">' + MM.cupSVG(c.color, c.symbol) +
-        '<div style="min-width:0"><div class="result-sym" style="color:' + c.color + '">' + MM.esc(c.symbol) + "</div>" +
+        '<div style="min-width:0"><div class="result-sym">' + MM.esc(c.symbol) + "</div>" +
         '<div class="result-name">' + MM.esc(MM.pick(c.name)) + "</div></div></div>" +
         character +
         '<div class="quiz-actions">' +

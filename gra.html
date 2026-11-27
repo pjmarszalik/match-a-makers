@@ -17,26 +17,38 @@
 <body data-page="game" data-title="nav.game">
 <header id="site-header"></header>
 <main>
-<section class="game-wrap wrap">
+<section class="game-wrap wrap" id="game-wrap">
   <h1 style="margin-bottom:8px" data-i18n="game.title"></h1>
   <div class="record-bar hidden" id="record-bar"></div>
   <div class="game-frame" id="game-frame">
     <canvas id="game"></canvas>
-    <form class="save-panel hidden" id="save-panel" autocomplete="off">
-      <p class="save-title" id="save-title"></p>
-      <div class="save-row">
-        <label class="sr-only" for="nick" data-i18n="game.nick"></label>
-        <input id="nick" name="nick" type="text" maxlength="12" required data-i18n-ph="game.nick" enterkeyhint="done">
-        <button class="btn green" type="submit" id="save-btn" data-i18n="game.save"></button>
+    <div class="frame-status hidden" id="frame-status" aria-hidden="true"><span></span></div>
+    <form class="nick-panel hidden" id="nick-panel" autocomplete="off" novalidate>
+      <div class="nick-card">
+        <h2 class="nick-title" id="nick-title" data-i18n="game.who"></h2>
+        <p class="nick-text" id="nick-text" data-i18n="game.whoText"></p>
+        <div class="nick-row">
+          <label class="sr-only" for="nick" data-i18n="game.nick"></label>
+          <input id="nick" name="nick" type="text" maxlength="30" data-i18n-ph="game.nickPh" enterkeyhint="go" autocapitalize="words" autocorrect="off" spellcheck="false">
+          <button class="btn green" type="submit" id="play-btn" data-i18n="game.play"></button>
+        </div>
+        <p class="nick-msg" id="nick-msg" aria-live="polite"></p>
+        <button class="link-btn hidden" type="button" id="nick-cancel" data-i18n="game.cancel"></button>
       </div>
-      <p class="save-msg" id="save-msg" aria-live="polite"></p>
-      <button class="link-btn" type="button" id="skip-btn" data-i18n="game.skip"></button>
     </form>
+  </div>
+  <div class="player-bar hidden" id="player-bar">
+    <p class="player-who"><span id="player-name"></span> <button class="link-btn" type="button" id="change-nick" data-i18n="game.changeNick"></button></p>
+    <p class="player-status" id="player-status" aria-live="polite"></p>
   </div>
   <p class="game-help" data-i18n="game.help"></p>
   <div class="board-wrap hidden" id="board-wrap">
-    <h2 data-i18n="game.board"></h2>
+    <div class="board-head">
+      <h2 data-i18n="game.board"></h2>
+      <span class="board-count" id="board-count"></span>
+    </div>
     <ol class="board" id="board"></ol>
+    <button class="btn ghost board-more hidden" type="button" id="board-more" aria-controls="board" aria-expanded="false"></button>
   </div>
 </section>
 </main>

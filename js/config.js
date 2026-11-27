@@ -36,7 +36,7 @@ window.MM_CONFIG = {
 
   // Ranking w grze: adres aplikacji Apps Script (kończy się na /exec).
   // Zostaw "", dopóki go nie ma. Gra działa wtedy bez rankingu.
-  leaderboardUrl: "",
+  leaderboardUrl: "https://script.google.com/macros/s/AKfycbyhCjzDazGBdzZRhi_Zff0zhmEdNop6L1cxPd61mbq9zrDLdDMY3MR8V8t7hxPu3KZz/exec",
 
   // Sukienka: link do oryginalnego zdjęcia (autorka: Cecilia Bleasdale) i ewentualne
   // własne zdjęcie na stronie, np. "img/dress.jpg". Zostaw "", żeby pokazać nasz rysunek.

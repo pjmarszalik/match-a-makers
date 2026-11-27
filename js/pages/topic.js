@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var others = MM.cups().filter(function (o) { return o.key !== c.key; }).map(function (o) {
       return '<a href="temat.html?k=' + encodeURIComponent(o.key) + '" class="mix-dot" style="--cup:' + o.color +
-        ';text-decoration:none" aria-label="' + MM.esc(MM.pick(o.name)) + '" title="' + MM.esc(MM.pick(o.name)) + '">' + MM.esc(o.symbol) + "</a>";
+        ";color:" + onCup(o.color) + ';text-decoration:none" aria-label="' + MM.esc(MM.pick(o.name)) + '" title="' + MM.esc(MM.pick(o.name)) + '">' + MM.esc(o.symbol) + "</a>";
     }).join("");
 
     var source = c.source && c.source.url
