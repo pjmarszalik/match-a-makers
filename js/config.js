@@ -38,6 +38,20 @@ window.MM_CONFIG = {
   // Zostaw "", dopóki go nie ma. Gra działa wtedy bez rankingu.
   leaderboardUrl: "https://script.google.com/macros/s/AKfycbyhCjzDazGBdzZRhi_Zff0zhmEdNop6L1cxPd61mbq9zrDLdDMY3MR8V8t7hxPu3KZz/exec",
 
+  // Duel na żywo (Gra → podzakładka Duel): projekt Firebase z Realtime Database.
+  // Te klucze nie są tajne (każda strona z Firebase ma je w kodzie), bazę chronią
+  // reguły (Firebase → Realtime Database → Rules, treść w pliku duel-firebase-rules.json).
+  // Pusty databaseURL = duel schowany, a zakładki Gry wyglądają jak bez duela.
+  duel: {
+    apiKey: "AIzaSyD4IA8GLYWTfdO8SP_yaHY-2jZD6P7DzCg",
+    authDomain: "match-a-makers-duel.firebaseapp.com",
+    databaseURL: "https://match-a-makers-duel-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "match-a-makers-duel",
+    storageBucket: "match-a-makers-duel.firebasestorage.app",
+    messagingSenderId: "805986901198",
+    appId: "1:805986901198:web:d7d61cf5d60508a528c49f"
+  },
+
   // Sukienka: link do oryginalnego zdjęcia (autorka: Cecilia Bleasdale) i ewentualne
   // własne zdjęcie na stronie, np. "img/dress.jpg". Zostaw "", żeby pokazać nasz rysunek.
   dressPhotoUrl: "https://en.wikipedia.org/wiki/The_dress",

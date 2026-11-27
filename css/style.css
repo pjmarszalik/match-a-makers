@@ -894,3 +894,159 @@ a.chip:hover { border-color: var(--matcha); color: var(--ink); }
   .game-wrap.has-board > .board-wrap { grid-area: board; max-width: none; margin-top: 20px; }
   .game-wrap.has-board .frame-status { display: none; }
 }
+
+/* ---------- Gra: podzakładki (Solo | Duel), js/game-tabs.js ---------- */
+.game-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 12px;
+  max-width: 100%;
+  margin-bottom: 8px;
+}
+.game-title-row h1 { margin: 0; }
+.game-tabs {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+}
+.game-tabs a {
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.game-tabs a:hover { background: var(--cream-2); color: var(--ink); }
+.game-tabs a.on { background: var(--ink); color: var(--cream); }
+/* przełącznik nie mieści się obok tytułu: tytuł tylko dla czytnika ekranu, rząd nie rośnie */
+.game-title-row.compact h1 {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.game-title-row.compact .game-tabs a { padding: 6px 14px; font-size: 0.95rem; }
+@media (min-width: 900px) {
+  .game-wrap.has-board > .game-title-row { grid-area: title; justify-self: center; }
+}
+
+/* ---------- Matcha Ninja: przeciąganie palcem nie przewija strony ---------- */
+.ninja-frame, .ninja-frame canvas { touch-action: none; overscroll-behavior: contain; }
+.ninja-frame canvas { cursor: crosshair; }
+
+/* ---------- Duel na żywo (duel.html) ---------- */
+.duel-panel { padding-top: clamp(10px, 5%, 48px); }
+.duel-card { max-width: 340px; gap: 8px; padding: 16px; }
+.duel-card .nick-title { overflow-wrap: anywhere; }
+.duel-input {
+  width: 100%;
+  min-width: 0;
+  font: inherit;
+  font-size: 16px; /* iPhone nie przybliża strony przy wpisywaniu */
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+}
+.duel-input:focus { outline: none; border-color: var(--matcha); }
+.duel-card > .btn { padding: 11px 18px; }
+.duel-hint { margin: -4px 0 2px; font-size: 0.85rem; color: var(--ink-soft); }
+.duel-code-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.duel-code-label { font-size: 0.9rem; color: var(--ink-soft); white-space: nowrap; }
+.duel-input.code { text-transform: uppercase; letter-spacing: 0.18em; padding: 8px 6px; text-align: center; }
+.duel-code-row .btn { padding: 9px 16px; }
+.duel-qr {
+  justify-self: center;
+  width: min(200px, 100%);
+  aspect-ratio: 1;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px;
+}
+.duel-qr svg { display: block; width: 100%; height: 100%; }
+.duel-code {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.18em;
+}
+.duel-waiting { margin: 0; color: var(--ink-soft); font-size: 0.92rem; text-align: center; animation: duel-pulse 1.6s ease-in-out infinite; }
+.duel-card .dots::after { content: "…"; }
+@keyframes duel-pulse { 50% { opacity: 0.45; } }
+.duel-ready { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.duel-ready li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: var(--cream);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+}
+.duel-ready .nm { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.duel-ready .st { flex: none; color: var(--ink-soft); }
+.duel-ready li.ok .st { color: var(--matcha-deep); font-weight: 600; }
+.duel-score { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 4px 10px; text-align: center; }
+.duel-score .pts { font-family: var(--font-head); font-size: 2.6rem; font-weight: 700; line-height: 1; }
+.duel-score .sep { font-family: var(--font-head); font-size: 1.6rem; color: var(--ink-soft); }
+.duel-score .who { font-size: 0.85rem; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.duel-score .me { color: var(--matcha-deep); }
+.duel-opp-note { margin: 0; font-size: 0.92rem; color: var(--matcha-deep); font-weight: 600; }
+.duel-opp-note:empty { display: none; }
+.duel-opp {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(50% - 30px); /* nie wchodzi na wynik na środku */
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 253, 247, 0.92);
+  border: 1px solid rgba(31, 42, 27, 0.15);
+  font-size: 0.85rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+.duel-opp i { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--matcha); }
+.duel-opp span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.duel-opp.out { opacity: 0.6; }
+.duel-count {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 3;
+  text-align: center;
+  font-family: var(--font-head);
+  font-size: 5.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  -webkit-text-stroke: 3px rgba(31, 42, 27, 0.85);
+  paint-order: stroke fill;
+  pointer-events: none;
+}
