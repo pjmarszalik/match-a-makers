@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duel · Match(a) Makers</title>
+<meta name="description" content="Matcha and conversations with new people. Students' Room, Faculty of Physics, University of Warsaw.">
+<meta property="og:title" content="Match(a) Makers">
+<meta property="og:description" content="Matcha and conversations with new people. Students' Room, Faculty of Physics, University of Warsaw.">
+<meta name="theme-color" content="#f7f2e6">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="game" data-title="duel.pageTitle">
+<header id="site-header"></header>
+<main>
+<section class="game-wrap wrap duel-wrap" id="duel-wrap">
+  <div class="game-title-row">
+    <h1 data-i18n="game.title"></h1>
+    <nav class="game-tabs hidden" id="game-tabs" data-i18n-aria="tabs.aria"></nav>
+  </div>
+  <div class="game-frame" id="duel-frame">
+    <canvas id="duel-game"></canvas>
+    <div class="duel-opp hidden" id="duel-opp"><i></i><span></span></div>
+    <div class="duel-count hidden" id="duel-count" aria-live="assertive"></div>
+    <div class="frame-status hidden" id="duel-status" aria-live="polite"><span></span></div>
+
+    <div class="nick-panel duel-panel" id="duel-panel">
+
+      <!-- start: imię + szybki duel / duel ze znajomym / wpisz kod -->
+      <div class="nick-card duel-card hidden" id="card-home">
+        <h2 class="nick-title" data-i18n="duel.title"></h2>
+        <p class="nick-text" data-i18n="duel.intro"></p>
+        <label class="sr-only" for="duel-nick" data-i18n="duel.nameLabel"></label>
+        <input class="duel-input" id="duel-nick" type="text" maxlength="20" data-i18n-ph="duel.namePh" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="go">
+        <button class="btn green" type="button" id="btn-quick" data-i18n="duel.quick"></button>
+        <p class="duel-hint" data-i18n="duel.quickHint"></p>
+        <button class="btn ghost" type="button" id="btn-friend" data-i18n="duel.friend"></button>
+        <form class="duel-code-row" id="code-form" autocomplete="off" novalidate>
+          <label class="duel-code-label" for="code-in" data-i18n="duel.haveCode"></label>
+          <input class="duel-input code" id="code-in" type="text" maxlength="4" data-i18n-ph="duel.codePh" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="go">
+          <button class="btn" type="submit" data-i18n="duel.join"></button>
+        </form>
+        <p class="nick-msg" id="home-msg" aria-live="polite"></p>
+      </div>
+
+      <!-- szybki duel: czekanie na drugą osobę -->
+      <div class="nick-card duel-card hidden" id="card-wait">
+        <h2 class="nick-title duel-waiting-title"><span id="wait-title"></span><span class="dots" aria-hidden="true"></span></h2>
+        <p class="nick-text" id="wait-text"></p>
+        <button class="link-btn" type="button" id="btn-cancel-wait" data-i18n="game.cancel"></button>
+      </div>
+
+      <!-- duel ze znajomym: kod QR do pokazania -->
+      <div class="nick-card duel-card hidden" id="card-host">
+        <h2 class="nick-title" data-i18n="duel.showCode"></h2>
+        <div class="duel-qr" id="host-qr" role="img" data-i18n-aria="duel.qrAria"></div>
+        <p class="duel-code" id="host-code"></p>
+        <p class="nick-text" data-i18n="duel.showCodeText"></p>
+        <button class="btn ghost" type="button" id="btn-share" data-i18n="duel.share"></button>
+        <p class="nick-msg" id="host-msg" aria-live="polite"></p>
+        <p class="duel-waiting"><span data-i18n="duel.waitingFor"></span><span class="dots" aria-hidden="true"></span></p>
+        <button class="link-btn" type="button" id="btn-cancel-host" data-i18n="game.cancel"></button>
+      </div>
+
+      <!-- wejście z kodu QR / linku -->
+      <form class="nick-card duel-card hidden" id="card-join" autocomplete="off" novalidate>
+        <h2 class="nick-title" id="join-title"></h2>
+        <p class="nick-text" data-i18n="duel.joinText"></p>
+        <label class="sr-only" for="join-nick" data-i18n="duel.nameLabel"></label>
+        <div class="nick-row">
+          <input id="join-nick" type="text" maxlength="20" data-i18n-ph="duel.namePh" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="go">
+          <button class="btn green" type="submit" id="btn-join" data-i18n="duel.join"></button>
+        </div>
+        <p class="nick-msg" id="join-msg" aria-live="polite"></p>
+        <button class="link-btn" type="button" id="btn-join-back" data-i18n="duel.back"></button>
+      </form>
+
+      <!-- obie osoby w pokoju: Gotowe -->
+      <div class="nick-card duel-card hidden" id="card-lobby">
+        <h2 class="nick-title duel-vs" id="lobby-title"></h2>
+        <ul class="duel-ready" id="lobby-list"></ul>
+        <button class="btn green" type="button" id="btn-ready" data-i18n="duel.ready"></button>
+        <button class="link-btn" type="button" id="btn-leave" data-i18n="duel.leave"></button>
+      </div>
+
+      <!-- wynik rundy -->
+      <div class="nick-card duel-card hidden" id="card-result">
+        <h2 class="nick-title" id="res-title"></h2>
+        <div class="duel-score" id="res-score"></div>
+        <p class="nick-text" id="res-series"></p>
+        <p class="duel-opp-note" id="res-opp" aria-live="polite"></p>
+        <button class="btn green" type="button" id="btn-rematch" data-i18n="duel.rematch"></button>
+        <button class="link-btn" type="button" id="btn-leave2" data-i18n="duel.leave"></button>
+      </div>
+
+      <!-- komunikat (ktoś wyszedł, duel wygasł, brak połączenia) -->
+      <div class="nick-card duel-card hidden" id="card-msg">
+        <h2 class="nick-title" id="msg-title"></h2>
+        <p class="nick-text" id="msg-text"></p>
+        <button class="btn green" type="button" id="btn-msg" data-i18n="duel.newDuel"></button>
+      </div>
+
+      <!-- duel nie ma jeszcze ustawień Firebase -->
+      <div class="nick-card duel-card hidden" id="card-off">
+        <h2 class="nick-title" data-i18n="duel.offTitle"></h2>
+        <p class="nick-text" data-i18n="duel.offText"></p>
+        <a class="btn green" href="gra.html" data-i18n="duel.playSolo"></a>
+      </div>
+    </div>
+  </div>
+  <p class="game-help" data-i18n="duel.help"></p>
+</section>
+</main>
+<footer id="site-footer"></footer>
+<script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data/cups.js"></script>
+<script src="gra/flappy.js"></script>
+<script src="gra/flappy-duel.js"></script>
+<script src="js/common.js"></script>
+<script src="js/game-tabs.js"></script>
+<script src="js/vendor/qrcode.js"></script>
+<script src="js/vendor/firebase-app-compat.js"></script>
+<script src="js/vendor/firebase-database-compat.js"></script>
+<script src="js/duel-demo-db.js"></script>
+<script src="js/pages/duel-page.js"></script>
+</body>
+</html>
